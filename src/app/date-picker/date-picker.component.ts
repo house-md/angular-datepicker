@@ -1,22 +1,22 @@
-import {IDate} from '../common/models/date.model';
-import {DomHelper} from '../common/services/dom-appender/dom-appender.service';
-import {UtilsService} from '../common/services/utils/utils.service';
-import {CalendarMode} from '../common/types/calendar-mode';
-import {ECalendarMode} from '../common/types/calendar-mode-enum';
-import {CalendarValue} from '../common/types/calendar-value';
-import {ECalendarValue} from '../common/types/calendar-value-enum';
-import {SingleCalendarValue} from '../common/types/single-calendar-value';
-import {IDayCalendarConfig} from '../day-calendar/day-calendar-config.model';
-import {DayCalendarComponent} from '../day-calendar/day-calendar.component';
-import {DayCalendarService} from '../day-calendar/day-calendar.service';
-import {IDayTimeCalendarConfig} from '../day-time-calendar/day-time-calendar-config.model';
-import {DayTimeCalendarService} from '../day-time-calendar/day-time-calendar.service';
-import {ITimeSelectConfig} from '../time-select/time-select-config.model';
-import {TimeSelectComponent} from '../time-select/time-select.component';
-import {TimeSelectService} from '../time-select/time-select.service';
-import {IDatePickerConfig, IDatePickerConfigInternal} from './date-picker-config.model';
-import {IDpDayPickerApi} from './date-picker.api';
-import {DatePickerService} from './date-picker.service';
+import { IDate } from '../common/models/date.model';
+import { DomHelper } from '../common/services/dom-appender/dom-appender.service';
+import { UtilsService } from '../common/services/utils/utils.service';
+import { CalendarMode } from '../common/types/calendar-mode';
+import { ECalendarMode } from '../common/types/calendar-mode-enum';
+import { CalendarValue } from '../common/types/calendar-value';
+import { ECalendarValue } from '../common/types/calendar-value-enum';
+import { SingleCalendarValue } from '../common/types/single-calendar-value';
+import { IDayCalendarConfig } from '../day-calendar/day-calendar-config.model';
+import { DayCalendarComponent } from '../day-calendar/day-calendar.component';
+import { DayCalendarService } from '../day-calendar/day-calendar.service';
+import { IDayTimeCalendarConfig } from '../day-time-calendar/day-time-calendar-config.model';
+import { DayTimeCalendarService } from '../day-time-calendar/day-time-calendar.service';
+import { ITimeSelectConfig } from '../time-select/time-select-config.model';
+import { TimeSelectComponent } from '../time-select/time-select.component';
+import { TimeSelectService } from '../time-select/time-select.service';
+import { IDatePickerConfig, IDatePickerConfigInternal } from './date-picker-config.model';
+import { IDpDayPickerApi } from './date-picker.api';
+import { DatePickerService } from './date-picker.service';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -37,21 +37,14 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ValidationErrors,
-  Validator
-} from '@angular/forms';
-import {Moment, unitOfTime} from 'moment';
-import {DateValidator} from '../common/types/validator.type';
-import {MonthCalendarComponent} from '../month-calendar/month-calendar.component';
-import {DayTimeCalendarComponent} from '../day-time-calendar/day-time-calendar.component';
-import {INavEvent} from '../common/models/navigation-event.model';
-import {SelectEvent} from '../common/types/selection-evet.enum.';
-import {ISelectionEvent} from '../common/types/selection-evet.model';
+import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { Moment, unitOfTime } from 'moment';
+import { DateValidator } from '../common/types/validator.type';
+import { MonthCalendarComponent } from '../month-calendar/month-calendar.component';
+import { DayTimeCalendarComponent } from '../day-time-calendar/day-time-calendar.component';
+import { INavEvent } from '../common/models/navigation-event.model';
+import { SelectEvent } from '../common/types/selection-evet.enum.';
+import { ISelectionEvent } from '../common/types/selection-evet.model';
 
 @Component({
   selector: 'dp-date-picker',
@@ -77,11 +70,11 @@ import {ISelectionEvent} from '../common/types/selection-evet.model';
   ]
 })
 export class DatePickerComponent implements OnChanges,
-                                            OnInit,
-                                            AfterViewInit,
-                                            ControlValueAccessor,
-                                            Validator,
-                                            OnDestroy {
+  OnInit,
+  AfterViewInit,
+  ControlValueAccessor,
+  Validator,
+  OnDestroy {
   isInitialized: boolean = false;
   @Input() config: IDatePickerConfig;
   @Input() mode: CalendarMode = 'day';
@@ -136,7 +129,7 @@ export class DatePickerComponent implements OnChanges,
   set selected(selected: Moment[]) {
     this._selected = selected;
     this.inputElementValue = (<string[]>this.utilsService
-                                            .convertFromMomentArray(this.componentConfig.format, selected, ECalendarValue.StringArr))
+      .convertFromMomentArray(this.componentConfig.format, selected, ECalendarValue.StringArr))
       .join(' | ');
     const val = this.processOnChangeCallback(selected);
     this.onChangeCallback(val, false);
@@ -245,11 +238,13 @@ export class DatePickerComponent implements OnChanges,
   }
 
   writeValue(value: CalendarValue): void {
+    if (value === undefined) {
+      return;
+    }
     this.inputValue = value;
-
     if (value || value === '') {
       this.selected = this.utilsService
-                          .convertToMomentArray(value, this.componentConfig.format, this.componentConfig.allowMultiSelect);
+        .convertToMomentArray(value, this.componentConfig.format, this.componentConfig.allowMultiSelect);
       this.init();
     } else {
       this.selected = [];
@@ -274,6 +269,9 @@ export class DatePickerComponent implements OnChanges,
   }
 
   validate(formControl: FormControl): ValidationErrors {
+    console.log(this.inputValue);
+    console.log(formControl.value);
+    console.log(formControl.dirty, 'Am I Dirty?');
     return this.validateFn(formControl.value);
   }
 
@@ -327,7 +325,7 @@ export class DatePickerComponent implements OnChanges,
   }
 
   setElementPositionInDom(): void {
-    this.calendarWrapper = <HTMLElement> this.calendarContainer.nativeElement;
+    this.calendarWrapper = <HTMLElement>this.calendarContainer.nativeElement;
     this.setInputElementContainer();
     this.popupElem = this.elemRef.nativeElement.querySelector('.dp-popup');
     this.handleInnerElementClick(this.popupElem);
@@ -365,12 +363,12 @@ export class DatePickerComponent implements OnChanges,
     this.currentDateView = this.displayDate
       ? this.utilsService.convertToMoment(this.displayDate, this.componentConfig.format).clone()
       : this.utilsService
-            .getDefaultDisplayDate(
-              this.currentDateView,
-              this.selected,
-              this.componentConfig.allowMultiSelect,
-              this.componentConfig.min
-            );
+        .getDefaultDisplayDate(
+          this.currentDateView,
+          this.selected,
+          this.componentConfig.allowMultiSelect,
+          this.componentConfig.min
+        );
     this.dayCalendarConfig = this.dayPickerService.getDayConfigService(this.componentConfig);
     this.dayTimeCalendarConfig = this.dayPickerService.getDayTimeConfigService(this.componentConfig);
     this.timeSelectConfig = this.dayPickerService.getTimeConfigService(this.componentConfig);
@@ -438,17 +436,17 @@ export class DatePickerComponent implements OnChanges,
         date: strVal,
         type: SelectEvent.INPUT,
         granularity: null
-      })
+      });
     } else {
       this._selected = this.utilsService
-                           .getValidMomentArray(strVal, this.componentConfig.format);
+        .getValidMomentArray(strVal, this.componentConfig.format);
       this.onChangeCallback(this.processOnChangeCallback(strVal), true);
     }
   }
 
   dateSelected(date: IDate, granularity: unitOfTime.Base, type: SelectEvent, ignoreClose?: boolean) {
     this.selected = this.utilsService
-                        .updateSelected(this.componentConfig.allowMultiSelect, this.selected, date, granularity);
+      .updateSelected(this.componentConfig.allowMultiSelect, this.selected, date, granularity);
     if (!ignoreClose) {
       this.onDateClick();
     }
